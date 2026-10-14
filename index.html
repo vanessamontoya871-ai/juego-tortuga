@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐢 Carrera de Tortugas - 2 JUGADORES (Multijugador)</title>
+    <meta name="description" content="Juego de carreras de 2 jugadores en simultáneo. Jugador 1 con Flechas/Espacio y Jugador 2 con W, S, D. Responde 14 preguntas sobre GitHub y Web.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-background"></div>
+
+    <div class="main-container">
+        <!-- HEADER & PANEL MULTIJUGADOR -->
+        <header class="game-header">
+            <div class="title-badge multi-badge">
+                <span class="emoji">🎮 VS 🎮</span>
+                <span class="text">MODO 2 JUGADORES EN SIMULTÁNEO</span>
+            </div>
+            <h1 class="main-title">🐢 CARRERA DE TORTUGAS DE 2 JUGADORES 🚀</h1>
+            <p class="subtitle">¡Compitan 2 personas al mismo tiempo en el mismo teclado! Respondan las 14 preguntas y corran a la meta.</p>
+
+            <!-- MARCUDOR DE 2 JUGADORES -->
+            <div class="stats-bar multi-stats">
+                <!-- STATS JUGADOR 1 -->
+                <div class="player-stat-box p1-box">
+                    <div class="player-stat-header">
+                        <span class="p-avatar">🐢⚡</span>
+                        <span class="p-title">JUGADOR 1 (Verde)</span>
+                    </div>
+                    <div class="p-details">
+                        <span>Puntos: <strong id="p1-score">0 PTS</strong></span> | 
+                        <span>Progreso: <strong id="p1-dist">2%</strong></span>
+                    </div>
+                </div>
+
+                <!-- TIEMPO GENERAL -->
+                <div class="stat-card timer-card">
+                    <span class="stat-icon">⏱️</span>
+                    <div class="stat-info">
+                        <span class="stat-label">Tiempo</span>
+                        <span id="timer-display" class="stat-value">00:00</span>
+                    </div>
+                    <button id="sound-btn" class="icon-button" title="Sonido">
+                        <span id="sound-icon">🔊</span>
+                    </button>
+                </div>
+
+                <!-- STATS JUGADOR 2 -->
+                <div class="player-stat-box p2-box">
+                    <div class="player-stat-header">
+                        <span class="p-avatar">🐢🔥</span>
+                        <span class="p-title">JUGADOR 2 (Rojo)</span>
+                    </div>
+                    <div class="p-details">
+                        <span>Puntos: <strong id="p2-score">0 PTS</strong></span> | 
+                        <span>Progreso: <strong id="p2-dist">2%</strong></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- PANEL DE GUÍA DE CONTROLES DE LOS 2 JUGADORES -->
+        <div class="keyboard-guide-multi">
+            <div class="p-guide-card p1-guide">
+                <div class="p-guide-title">💚 JUGADOR 1 (Flechas)</div>
+                <div class="keys-list">
+                    <div class="key-badge"><kbd>⬆️</kbd> Arriba</div>
+                    <div class="key-badge"><kbd>⬇️</kbd> Abajo</div>
+                    <div class="key-badge highlight"><kbd>➡️</kbd> o <kbd>ESPACIO</kbd> ⚡ ¡CORRER!</div>
+                    <div class="key-badge"><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd> Responder</div>
+                </div>
+            </div>
+
+            <div class="vs-divider">VS</div>
+
+            <div class="p-guide-card p2-guide">
+                <div class="p-guide-title">❤️ JUGADOR 2 (W, S, D)</div>
+                <div class="keys-list">
+                    <div class="key-badge"><kbd>W</kbd> Arriba</div>
+                    <div class="key-badge"><kbd>S</kbd> Abajo</div>
+                    <div class="key-badge highlight-red"><kbd>D</kbd> ⚡ ¡CORRER!</div>
+                    <div class="key-badge"><kbd>I</kbd> <kbd>J</kbd> <kbd>K</kbd> <kbd>L</kbd> Responder</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PISTA DE CARRERAS ANIMADA (2 JUGADORES) -->
+        <section class="race-track-wrapper">
+            <div class="track-header">
+                <h2>🏁 Pista de Carreras de 2 Jugadores</h2>
+                <div class="track-status" id="track-status-message">¡P1 usa ESPACIO / ➡️ para correr y P2 usa D para correr!</div>
+            </div>
+
+            <div class="pista-container" id="race-track">
+                <!-- Líneas de salida y meta -->
+                <div class="linea-salida">START</div>
+                <div class="linea-meta">
+                    <span>M</span><span>E</span><span>T</span><span>A</span>
+                </div>
+
+                <!-- Carril Jugador 1 -->
+                <div class="carril carril-jugador" id="carril-player1">
+                    <div class="carril-tag p1-tag">💚 JUGADOR 1 (Flechas / Espacio)</div>
+                    <div class="carril-linea-marcas"></div>
+                    <div id="p1-turtle" class="tortuga-sprite tortuga-jugador" style="left: 2%; top: 12px;">
+                        <div class="turbo-effect" id="p1-turbo"></div>
+                        <span class="turtle-emoji">🐢⚡</span>
+                        <span class="turtle-name">Jugador 1</span>
+                        <span class="distance-badge" id="p1-distance-badge">2%</span>
+                    </div>
+                </div>
+
+                <!-- Carril Separador -->
+                <div class="carril-divider"></div>
+
+                <!-- Carril Jugador 2 -->
+                <div class="carril carril-rival" id="carril-player2">
+                    <div class="carril-tag p2-tag">❤️ JUGADOR 2 (W, S, D)</div>
+                    <div class="carril-linea-marcas"></div>
+                    <div id="p2-turtle" class="tortuga-sprite tortuga-rival" style="left: 2%; top: 12px;">
+                        <div class="turbo-effect turbo-red" id="p2-turbo"></div>
+                        <span class="turtle-emoji">🐢🔥</span>
+                        <span class="turtle-name">Jugador 2</span>
+                        <span class="distance-badge rival-badge" id="p2-distance-badge">2%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTONES DE CONTROL TOUCH PARA CADA JUGADOR -->
+            <div class="onscreen-controls-multi">
+                <div class="p-touch-group">
+                    <span class="p-touch-label">💚 Controles P1:</span>
+                    <button id="p1-btn-up" class="control-btn">⬆️</button>
+                    <button id="p1-btn-run" class="control-btn run-btn">⚡ ¡CORRER P1! (Espacio / ➡️)</button>
+                    <button id="p1-btn-down" class="control-btn">⬇️</button>
+                </div>
+                <div class="p-touch-group">
+                    <span class="p-touch-label">❤️ Controles P2:</span>
+                    <button id="p2-btn-up" class="control-btn p2-btn">W (Arriba)</button>
+                    <button id="p2-btn-run" class="control-btn run-btn p2-run-btn">⚡ ¡CORRER P2! (D)</button>
+                    <button id="p2-btn-down" class="control-btn p2-btn">S (Abajo)</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE TRIVIA Y PREGUNTAS (14 PREGUNTAS) -->
+        <main class="quiz-section">
+            <div class="quiz-card" id="quiz-card">
+                <div class="question-header">
+                    <div class="question-number-badge">
+                        Pregunta <span id="current-question-num">1</span> de 14
+                    </div>
+                    <div class="category-badge" id="question-category">
+                        💻 Desafío de Trivia para P1 y P2
+                    </div>
+                </div>
+
+                <div class="question-body">
+                    <h3 id="question-text" class="question-text">Cargando pregunta...</h3>
+                    <p class="question-hint">¡El primer jugador en responder correctamente avanza un gran impulso nitro a su tortuga!</p>
+                </div>
+
+                <!-- Opciones de Respuesta -->
+                <div id="options-container" class="options-grid">
+                    <!-- Generado dinámicamente con JS -->
+                </div>
+
+                <!-- Feedback Visual de Respuesta -->
+                <div id="feedback-banner" class="feedback-banner hidden">
+                    <div class="feedback-icon" id="feedback-icon">✅</div>
+                    <div class="feedback-content">
+                        <h4 id="feedback-title">¡Respuesta Registrada!</h4>
+                        <p id="feedback-desc">Detalles del avance del jugador.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- GALERÍA DE LAS 14 PREGUNTAS Y TEMAS DEL JUEGO -->
+        <section class="words-dictionary-section">
+            <div class="section-header">
+                <h2>📚 Las 14 Preguntas y Respuestas del Juego</h2>
+                <p>Temas sobre GitHub, Git y Frameworks Frontend desbloqueados durante la carrera:</p>
+            </div>
+            <div id="words-grid" class="words-grid">
+                <!-- Se llena dinámicamente con las 14 preguntas -->
+            </div>
+        </section>
+
+        <footer class="game-footer">
+            <p>Creado por Antigravity Software • Juego de Carreras de 2 Jugadores 🐢⚡ vs 🐢🔥</p>
+        </footer>
+    </div>
+
+    <!-- MODAL DE FINAL DE CARRERA (GANADOR P1 O P2) -->
+    <div id="end-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-banner" id="modal-banner">
+                <span class="modal-emoji" id="modal-emoji">🏆</span>
+                <h2 id="modal-title">¡GANADOR DE LA CARRERA!</h2>
+            </div>
+            <div class="modal-body">
+                <p id="modal-message">¡Una de las dos tortugas cruzó la línea de meta!</p>
+
+                <div class="modal-stats">
+                    <div class="modal-stat-item">
+                        <span class="label">Tiempo de Carrera:</span>
+                        <span class="value" id="final-time">00:45</span>
+                    </div>
+                    <div class="modal-stat-item">
+                        <span class="label">Puntaje Jugador 1 (Verde):</span>
+                        <span class="value" id="final-p1-score">0 PTS</span>
+                    </div>
+                    <div class="modal-stat-item">
+                        <span class="label">Puntaje Jugador 2 (Rojo):</span>
+                        <span class="value" id="final-p2-score">0 PTS</span>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="restart-btn" class="primary-btn">
+                        <span>🔄 Revancha / Jugar de Nuevo</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Canvas para Confeti en Victoria -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <script src="script.js"></script>
+</body>
+</html>
